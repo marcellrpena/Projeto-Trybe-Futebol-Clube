@@ -14,14 +14,10 @@ const { app } = new App();
 
 const { expect } = chai;
 
-describe('Seu teste', () => {
-  /**
-   * Exemplo do uso de stubs com tipos
-   */
+describe('Rota de Login', () => {
+  let chaiHttpResponse: Response;
 
-  // let chaiHttpResponse: Response;
-
-  // before(async () => {
+   // before(async () => {
   //   sinon
   //     .stub(Example, "findOne")
   //     .resolves({
@@ -32,16 +28,21 @@ describe('Seu teste', () => {
   // after(()=>{
   //   (Example.findOne as sinon.SinonStub).restore();
   // })
-
-  // it('...', async () => {
-  //   chaiHttpResponse = await chai
-  //      .request(app)
-  //      ...
-
-  //   expect(...)
-  // });
-
-  it('Seu sub-teste', () => {
-    expect(false).to.be.eq(true);
+  it('', async () => {
+    const response = await chai.request(app).post('/login').send({
+      "email": "teste@teste.com",
+      "password": "123456"
+    });
+    expect(response.status).to.be.equal(200);
   });
+  /**
+   * Exemplo do uso de stubs com tipos
+   */
+
+
+ 
+
+  // 
+
+  // chaiHttpResponse = await chai
 });
