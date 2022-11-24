@@ -3,4 +3,11 @@ interface IReturnMessage {
   message: string,
 }
 
-export default IReturnMessage;
+interface IReturnToken {
+  status: number,
+  message: {
+    token: string,
+  },
+}
+
+export { IReturnMessage, IReturnToken };

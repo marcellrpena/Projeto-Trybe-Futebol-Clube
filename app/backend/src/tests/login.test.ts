@@ -7,6 +7,7 @@ import App from '../app';
 import Example from '../database/models/ExampleModel';
 
 import { Response } from 'superagent';
+import User from '../database/models/UserModel';
 
 chai.use(chaiHttp);
 
@@ -14,20 +15,27 @@ const { app } = new App();
 
 const { expect } = chai;
 
-describe('Rota de Login', () => {
+describe('Seu teste', () => {
+  /**
+   * Exemplo do uso de stubs com tipos
+   */
+
   let chaiHttpResponse: Response;
+  before(async () => {
+    sinon
+      .stub(User, "findOne")
+      .resolves({
+        email: 'admin@admin.com',
+        id: 1,
+        password: '$2a$08$xi.Hxk1czAO0nZR..B393u10aED0RQ1N3PAEXQ7HxtLjKPEZBu.PW',
+        role: 'admin',
+        username: 'Admin',
+       } as User);
+  });
 
-   // before(async () => {
-  //   sinon
-  //     .stub(Example, "findOne")
-  //     .resolves({
-  //       ...<Seu mock>
-  //     } as Example);
-  // });
-
-  // after(()=>{
-  //   (Example.findOne as sinon.SinonStub).restore();
-  // })
+  after(() => {
+    (User.findOne as sinon.SinonStub).restore();
+  })
   it('testando se é possível fazer login corretamente', async () => {
     const response = await chai.request(app).post('/login').send({
       "email": "teste@teste.com",
@@ -35,14 +43,4 @@ describe('Rota de Login', () => {
     });
     expect(response.status).to.be.equal(200);
   });
-  /**
-   * Exemplo do uso de stubs com tipos
-   */
-
-
- 
-
-  // 
-
-  // chaiHttpResponse = await chai
 });
