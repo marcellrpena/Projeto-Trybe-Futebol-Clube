@@ -7,4 +7,4 @@ EXPOSE 3001
 
 RUN npm install
 
-ENTRYPOINT [ "npm", "start" ]
+ENTRYPOINT [ "npm", "run", "dev" ]

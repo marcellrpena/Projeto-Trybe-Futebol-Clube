@@ -28,7 +28,7 @@ describe('Rota de Login', () => {
   // after(()=>{
   //   (Example.findOne as sinon.SinonStub).restore();
   // })
-  it('', async () => {
+  it('testando se é possível fazer login corretamente', async () => {
     const response = await chai.request(app).post('/login').send({
       "email": "teste@teste.com",
       "password": "123456"
