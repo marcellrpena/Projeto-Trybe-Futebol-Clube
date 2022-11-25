@@ -67,14 +67,14 @@ describe('testando o login', () => {
       expect(response.body).to.be.deep.equal({ "message": "Incorrect email or password" })
       expect(response.status).to.be.equal(401);
     });
-    /* it('req: 9- testando que não é possível fazer login se o EMAIL não existir no banco de dados', async () => {
+   /*  it('req: 9- testando que não é possível fazer login se o EMAIL não existir no banco de dados', async () => {
       const response = await chai.request(app).post('/login').send({
         "email": "asdfa@adfa.com",
         "password": "secret_admin",
       });
       expect(response.body).to.be.deep.equal({ "message": "Incorrect email or password" })
-      expect(response.status).to.be.equal(401); */
-    });
+      expect(response.status).to.be.equal(401);
+    }); */
     it('req: 11 - testando que não é possível fazer login com um PASSWORD INVALIDO', async () => {
       const response = await chai.request(app).post('/login').send({
         "email": "admin@admin.com",
