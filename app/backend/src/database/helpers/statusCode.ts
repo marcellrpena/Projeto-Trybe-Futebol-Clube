@@ -1,0 +1,14 @@
+enum codes {
+  OK = 200,
+  CREATED = 201,
+  REDIRECT = 300,
+  BADREQUEST = 400,
+  UNAUTHORIZED = 401,
+  NOT_FOUND = 404,
+  UNPROCESSABLE_ENTITY = 422,
+  SERVER_ERROR = 500,
+  NO_CONTENT = 204,
+  CONFLICT = 409,
+}
+
+export default codes;

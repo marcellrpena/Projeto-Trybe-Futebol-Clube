@@ -3,7 +3,7 @@ import { IUser } from '../interfaces';
 // import IReturnMessage from '../interfaces/IReturn';
 
 const secret = process.env.JWT_SECRET || 'jwt_secret';
-function createToken(data: IUser) {
+function createToken(data: IUser.IUser) {
   const token = jwt.sign({ data }, secret, {
     expiresIn: '1d',
     algorithm: 'HS256',
@@ -32,7 +32,7 @@ const checkToken = (token: string) => {
   return user;
 };
 
-const newToken = (user: IUser) => {
+const newToken = (user: IUser.IUser) => {
   const { password: _, ...userWithoutPassword } = user;
   const token = createToken(userWithoutPassword);
   return { status: null, message: token };

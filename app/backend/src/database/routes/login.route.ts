@@ -1,14 +1,13 @@
 import * as express from 'express';
+import 'express-async-errors';
 import LoginController from '../controllers/login.controller';
-import LoginValidate from '../middlewares/LoginValidate';
+import loginValidate from '../middlewares/LoginValidate';
 
 const login = express.Router();
 
 login.post(
   '/',
-  (req: express.Request, res: express.Response, next: express.NextFunction) => (
-    LoginValidate.validateBody(req, res, next)
-  ),
+  loginValidate,
   (req: express.Request, res: express.Response) => LoginController.login(req, res),
 );
 

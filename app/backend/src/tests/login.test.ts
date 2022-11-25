@@ -18,7 +18,7 @@ const { expect } = chai;
 
 describe('testando o login', () => {
   let chaiHttpResponse: Response;
-  before(async () => {
+  beforeEach(async () => {
     sinon
       .stub(User, "findOne")
       .resolves({
@@ -32,28 +32,46 @@ describe('testando o login', () => {
       } as User);
   });
 
-  after(() => {
+  afterEach(() => {
     (User.findOne as sinon.SinonStub).restore();
   })
-  it('testando se é possível fazer login corretamente', async () => {
+  it('req: 3 - testando se é possível fazer login corretamente', async () => {
     const response = await chai.request(app).post('/login').send({
       "email": "admin@admin.com",
       "password": "secret_admin"
     });
     expect(response.status).to.be.equal(200);
   });
-  it('testando que não é possível fazer login sem informar um email no front-end', async () => {
-    const response = await chai.request(app).post('/login').send({
-      "password": "secret_admin",
+  describe('test All fields must be filled', () => {
+    it('req: 5 - testando que não é possível fazer login sem informar um EMAIL no front-end', async () => {
+      const response = await chai.request(app).post('/login').send({
+        "password": "secret_admin",
+      });
+      expect(response.body).to.be.deep.equal({ "message": "All fields must be filled" })
+      expect(response.status).to.be.equal(400);
     });
-    expect(response.body).to.be.deep.equal({ "message": "All fields must be filled" })
-    expect(response.status).to.be.equal(400);
+    it('req: 7 - testando que não é possível fazer login sem informar o PASSWORD no front-end', async () => {
+      const response = await chai.request(app).post('/login').send({
+        "email": "admin@admin.com",
+      });
+      expect(response.body).to.be.deep.equal({ "message": "All fields must be filled" })
+      expect(response.status).to.be.equal(400);
+    });
   });
-  it('testando que não é possível fazer login sem informar o password no front-end', async () => {
-    const response = await chai.request(app).post('/login').send({
-      "email": "admin@admin.com",
+  describe('Incorrect email or password', () => {
+    it('req: 5 - testando que não é possível fazer login sem informar um EMAIL no front-end', async () => {
+      const response = await chai.request(app).post('/login').send({
+        "password": "secret_admin",
+      });
+      expect(response.body).to.be.deep.equal({ "message": "All fields must be filled" })
+      expect(response.status).to.be.equal(401);
     });
-    expect(response.body).to.be.deep.equal({ "message": "All fields must be filled" })
-    expect(response.status).to.be.equal(400);
+    it('req: 7 - testando que não é possível fazer login sem informar o PASSWORD no front-end', async () => {
+      const response = await chai.request(app).post('/login').send({
+        "email": "admin@admin.com",
+      });
+      expect(response.body).to.be.deep.equal({ "message": "All fields must be filled" })
+      expect(response.status).to.be.equal(401);
+    });
   });
 });

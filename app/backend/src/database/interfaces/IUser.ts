@@ -6,4 +6,8 @@ interface IUser {
   role?: string;
 }
 
-export default IUser;
+interface IUserData {
+  dataValues: IUser;
+}
+
+export { IUser, IUserData };

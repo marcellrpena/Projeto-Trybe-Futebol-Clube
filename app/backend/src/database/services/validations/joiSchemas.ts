@@ -1,8 +1,29 @@
 // const Joi = require('joi');
 import * as Joi from 'joi';
 
-const emailSchema = Joi.string().email().required();
-const passwordSchema = Joi.string().min(6).required();
+const FILLED = 'All fields must be filled';
+const INCORRECT = 'Incorrect email or password';
+
+const emailSchema = Joi
+  .string()
+  .email()
+  .required()
+  .messages({
+    'string.empty': FILLED,
+    'any.required': FILLED,
+    'string.email': INCORRECT,
+    'string.base': INCORRECT,
+  });
+const passwordSchema = Joi
+  .string()
+  .min(6)
+  .required()
+  .messages({
+    'string.base': INCORRECT,
+    'string.min': INCORRECT,
+    'string.empty': FILLED,
+    'any.required': FILLED,
+  });
 const imageSchema = Joi.string();
 const idSchema = Joi.number().min(1).required();
 const categoryNameSchema = Joi.string().required();
