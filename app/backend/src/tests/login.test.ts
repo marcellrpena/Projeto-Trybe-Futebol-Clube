@@ -49,4 +49,11 @@ describe('testando o login', () => {
     expect(response.body).to.be.deep.equal({ "message": "All fields must be filled" })
     expect(response.status).to.be.equal(400);
   });
+  it('testando que não é possível fazer login sem informar o password no front-end', async () => {
+    const response = await chai.request(app).post('/login').send({
+      "email": "admin@admin.com",
+    });
+    expect(response.body).to.be.deep.equal({ "message": "All fields must be filled" })
+    expect(response.status).to.be.equal(400);
+  });
 });
