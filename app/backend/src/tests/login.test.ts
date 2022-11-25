@@ -59,18 +59,36 @@ describe('testando o login', () => {
     });
   });
   describe('Incorrect email or password', () => {
-    it('req: 5 - testando que não é possível fazer login sem informar um EMAIL no front-end', async () => {
+    it('req: 9- testando que não é possível fazer login com um EMAIL INVALIDO', async () => {
       const response = await chai.request(app).post('/login').send({
+        "email": "asdfa",
         "password": "secret_admin",
       });
-      expect(response.body).to.be.deep.equal({ "message": "All fields must be filled" })
+      expect(response.body).to.be.deep.equal({ "message": "Incorrect email or password" })
       expect(response.status).to.be.equal(401);
     });
-    it('req: 7 - testando que não é possível fazer login sem informar o PASSWORD no front-end', async () => {
+    /* it('req: 9- testando que não é possível fazer login se o EMAIL não existir no banco de dados', async () => {
+      const response = await chai.request(app).post('/login').send({
+        "email": "asdfa@adfa.com",
+        "password": "secret_admin",
+      });
+      expect(response.body).to.be.deep.equal({ "message": "Incorrect email or password" })
+      expect(response.status).to.be.equal(401); */
+    });
+    it('req: 11 - testando que não é possível fazer login com um PASSWORD INVALIDO', async () => {
       const response = await chai.request(app).post('/login').send({
         "email": "admin@admin.com",
+        "password": "sec",
       });
-      expect(response.body).to.be.deep.equal({ "message": "All fields must be filled" })
+      expect(response.body).to.be.deep.equal({ "message": "Incorrect email or password" })
+      expect(response.status).to.be.equal(401);
+    });
+    it('req: 11 - testando que não é possível fazer login se a senha do usuário não for igual ao do db', async () => {
+      const response = await chai.request(app).post('/login').send({
+        "email": "admin@admin.com",
+        "password": "sec",
+      });
+      expect(response.body).to.be.deep.equal({ "message": "Incorrect email or password" })
       expect(response.status).to.be.equal(401);
     });
   });
