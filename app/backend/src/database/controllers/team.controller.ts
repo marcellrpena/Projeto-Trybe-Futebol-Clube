@@ -7,6 +7,6 @@ export default class TeamController {
     res: Response,
   ): Promise<Response> {
     const response = await TeamService.getAll();
-    return res.status(200).json('cheguei');
+    return res.status(200).json(response);
   }
 }

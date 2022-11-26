@@ -14,19 +14,43 @@ const { app } = new App();
 
 const { expect } = chai;
 
-const GETALLMOCK = [{
-  id: 1,
-  teamName: "Avaí/Kindermann",
-},
-{
-  id: 2,
-  teamName: "Bahia",
-},
-{
-  id: 3,
-  teamName: "Botafogo",
-},
+const GETALLMOCK = [
+  {
+    dataValues: {
+      id: 1,
+      teamName: "Avaí/Kindermann",
+    }
+  },
+  {
+    dataValues: {
+      id: 2,
+      teamName: "Bahia",
+    }
+  },
+  {
+    dataValues: {
+      id: 3,
+      teamName: "Botafogo",
+    }
+  },
 ];
+
+const GETALLMAPPED = [
+  {
+    id: 1,
+    teamName: "Avaí/Kindermann",
+  },
+  {
+    id: 2,
+    teamName: "Bahia",
+  }
+  ,
+  {
+    id: 3,
+    teamName: "Botafogo",
+  },
+];
+
 
 describe('testando o endpoint /teams', () => {
   let chaiHttpResponse: Response;
@@ -49,7 +73,7 @@ describe('testando o endpoint /teams', () => {
     const response = await chai.request(app).get('/teams');
 
     expect(response.status).to.be.equal(200);
-    expect(response.body).to.be.deep.equal(GETALLMOCK)
+    expect(response.body).to.be.deep.equal(GETALLMAPPED)
   });
   /*   describe('test All fields must be filled', () => {
       it('req: 5 - testando que não é possível fazer login sem informar um EMAIL no front-end', async () => {
