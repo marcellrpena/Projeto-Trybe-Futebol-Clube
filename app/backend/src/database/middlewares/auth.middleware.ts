@@ -11,8 +11,7 @@ const validateToken = async (req: Request, res: Response, next: NextFunction) =>
     console.log('middleware de erro--->', messages);
     throw new ApiError(messages, codes.UNAUTHORIZED);
   }
-  // const { dataValues } = message;
-  req.body = { ...req.body, message };
+  req.body = { data: req.body, message };
   next();
 };
 

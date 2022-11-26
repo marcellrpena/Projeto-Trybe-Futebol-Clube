@@ -11,7 +11,7 @@ login.post(
   loginValidate,
   (req: express.Request, res: express.Response) => LoginController.login(req, res),
 );
-login.get('/', validateToken, (
+login.get('/validate', validateToken, (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
