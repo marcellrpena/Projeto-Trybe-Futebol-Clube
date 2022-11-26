@@ -14,16 +14,16 @@ function createToken(data: IUser.IUser) {
 
 const validateToken = (token: string) => {
   try {
-    const data = jwt.verify(token, secret);
+    const payload = jwt.verify(token, secret);
     // const { password: _, ...newData } = data;
-    return { status: 200, message: data };
+    return { status: 200, message: payload };
   } catch (error) {
     const e = 'Expired or invalid token';
     return { status: null, message: e };
   }
 };
 
-const checkToken = (token: string) => {
+const checkToken = (token: string | undefined) => {
   if (!token) {
     return { status: null, message: 'Token not found' };
   }

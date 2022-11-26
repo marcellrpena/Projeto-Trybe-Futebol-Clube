@@ -14,11 +14,25 @@ class LoginService {
     return { status: 200, message: { token: message } };
   }
 
-  private static async findOne(login: ILogin.ILogin): Promise<IUser.IUser> {
-    const { email, password } = login;
+  static async validate(userInfo: IUser.IUser): Promise<IReturn.IReturnValidUser> {
+    const role = await LoginService.findByPk(userInfo);
+    return { status: codes.OK, message: { role } };
+  }
+
+  private static async findOne(login: IUser.IUser): Promise<IUser.IUser> {
+    const { email, password = '' } = login;
     const user = await User.findOne({ where: { email } });
     LoginService.checkUser(user, password);
     return user?.dataValues;
+  }
+
+  private static async findByPk(userInfo: IUser.IUser): Promise<string> {
+    const { email, id } = userInfo;
+    const user = await User.findByPk(id);
+    if (!user || user.dataValues.email !== email) {
+      throw new ApiError('Expired or invalid token', codes.UNAUTHORIZED);
+    }
+    return user.dataValues.role;
   }
 
   private static checkUser(user: IUser.IUserData | null, password: string): void {

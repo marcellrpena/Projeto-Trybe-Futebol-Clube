@@ -10,4 +10,16 @@ interface IReturnToken {
   },
 }
 
-export { IReturnMessage, IReturnToken };
+interface IReturnValidUser {
+  status: number,
+  message: {
+    role: string,
+  }
+}
+
+interface IReturnTokenData {
+  status: number | null,
+  message?: string;
+}
+
+export { IReturnMessage, IReturnToken, IReturnValidUser, IReturnTokenData };

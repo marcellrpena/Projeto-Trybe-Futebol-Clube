@@ -6,6 +6,6 @@ const errorsMiddleware = (
   _req: express.Request,
   res: express.Response,
   _next: express.NextFunction,
-): express.Response => res.status(error.status).json({ message: error.message });
+): express.Response => res.status(error.status || 500).json({ message: error.message });
 
 export default errorsMiddleware;
