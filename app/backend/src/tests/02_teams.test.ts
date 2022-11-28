@@ -14,6 +14,13 @@ const { app } = new App();
 
 const { expect } = chai;
 
+const GETTEAMBYID = {
+  dataValues: {
+    "id": 5,
+    "teamName": "Cruzeiro"
+  }
+};
+
 const GETALLMOCK = [
   {
     dataValues: {
@@ -74,6 +81,27 @@ describe('testando o endpoint /teams', () => {
 
     expect(response.status).to.be.equal(200);
     expect(response.body).to.be.deep.equal(GETALLMAPPED)
+  });
+  beforeEach(async () => {
+    sinon
+      .stub(TeamModel, "findByPk")
+      .resolves(
+        GETTEAMBYID as TeamModel);
+  });
+
+  afterEach(() => {
+    (TeamModel.findByPk as sinon.SinonStub).restore();
+  })
+  it('req: 17 - testando se é possivel retornar um time pelo ID', async () => {
+    await chai.request(app).post('/login').send({
+      "email": "admin@admin.com",
+      "password": "secret_admin"
+    });
+
+    const response = await chai.request(app).get('/teams/5');
+
+    expect(response.status).to.be.equal(200);
+    expect(response.body).to.be.deep.equal(GETTEAMBYID.dataValues);
   });
   /*   describe('test All fields must be filled', () => {
       it('req: 5 - testando que não é possível fazer login sem informar um EMAIL no front-end', async () => {

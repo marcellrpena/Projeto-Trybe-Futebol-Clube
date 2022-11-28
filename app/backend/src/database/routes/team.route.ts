@@ -11,4 +11,10 @@ team.get('/', (
   _next: express.NextFunction,
 ) => TeamController.getAll(req, res));
 
+team.get('/:id', (
+  req: express.Request,
+  res: express.Response,
+  _next: express.NextFunction,
+) => TeamController.getById(req, res));
+
 export default team;
