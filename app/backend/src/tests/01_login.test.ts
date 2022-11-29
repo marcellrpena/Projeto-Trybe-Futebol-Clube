@@ -112,7 +112,11 @@ describe('testando o login', () => {
       (User.findByPk as sinon.SinonStub).restore();
     });
       it('req: 12- testando se é possivel validar um token correto', async () => {
-        const response = await chai.request(app).get('/login/validate').set('authorization', "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjoxLCJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsInVzZXJuYW1lIjoiQWRtaW4iLCJyb2xlIjoiYWRtaW4ifSwiaWF0IjoxNjY5NDc2MjA0LCJleHAiOjE2Njk1NjI2MDR9.-Qew0JL4ozVp6FgqkwVJyAMx0QGqaPe8bAj83RQIVvw").send();
+        const token = await chai.request(app).post('/login').send({
+          "email": "admin@admin.com",
+          "password": "secret_admin"
+        });
+        const response = await chai.request(app).get('/login/validate').set('authorization', token.body.token).send();
         expect(response.body).to.be.deep.equal({ "role": "admin" })
         expect(response.status).to.be.equal(200);
       });
@@ -123,7 +127,7 @@ describe('testando o login', () => {
       });
       it('req: 12- testando se não é possível validar caso o token seja invalido', async () => {
         const response = await chai.request(app).get('/login/validate').set('authorization', "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjoxLCJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsInVzZXJuYW1lIjoiQWRtaW4iLCJyb2xlIjoiYWRtaW4ifSwiaWF0IjoxNjY5NDc2MjA0LCJleHAiOjE2Njk1NjI2MDR9.-Qew0JL4ozVp6FgqkwVJyAMx0QGqaPe8asdfasdfasdf").send();
-        expect(response.body).to.be.deep.equal({ "message": "Expired or invalid token" })
+        expect(response.body).to.be.deep.equal({ "message": "Token must be a valid token" })
         expect(response.status).to.be.equal(401);
       });
     });
