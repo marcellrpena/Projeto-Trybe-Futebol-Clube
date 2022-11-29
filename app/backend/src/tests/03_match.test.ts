@@ -173,7 +173,7 @@ describe('testando o endpoint /matches para requisição por query', () => {
   });
 });
 
-describe.only('testando o endpoint /matches para salvar nova partida', () => {
+describe('testando o endpoint /matches para salvar nova partida', () => {
   let chaiHttpResponse: Response;
   beforeEach(async () => {
     sinon.stub(MatchesModel, "create").resolves({
