@@ -48,9 +48,8 @@ class MatchesService {
 
   static async updateMatches(id: number): Promise<void> {
     MatchesService.getById(id);
-    const teste = await MatchesModel
+    await MatchesModel
       .update({ inProgress: false }, { where: { id } });
-    console.log(teste);
   }
 
   private static async getById(id: number): Promise<void> {
