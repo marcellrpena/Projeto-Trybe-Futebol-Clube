@@ -40,9 +40,9 @@ export const matchUpdateProgress = async (
 export const matchUpdateResults = async (
   req: Request,
   res: Response,
-): Promise<void> => {
+): Promise<Response> => {
   const { id } = req.params;
   const { data } = req.body;
   await MatchesService.updateMatchesResults(Number(id), data);
-  return res.status(200).end();
+  return res.status(200).json({ message: 'Done' });
 };

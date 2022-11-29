@@ -1,6 +1,7 @@
 // import ApiError from '../helpers/api-errors';
 // import codes from '../helpers/statusCode';
 import ApiError from '../helpers/api-errors';
+import errorMessages from '../helpers/errorMessage';
 import codes from '../helpers/statusCode';
 import { IMatcher } from '../interfaces';
 import { IMatchesQuery } from '../interfaces/IMatcher';
@@ -41,9 +42,21 @@ class MatchesService {
   }
 
   static async createMatches(match: IMatcher): Promise<IMatcher> {
+    MatchesService.teamNotFound(match);
     const { dataValues } = await MatchesModel.create({ ...match, inProgress: true });
     const newMatch = await MatchesModel.findByPk(dataValues.id);
     return newMatch?.dataValues;
+  }
+
+  private static async teamNotFound(
+    data: IMatcher,
+  ): Promise<void> {
+    const { homeTeam, awayTeam } = data;
+    const searchHome = await TeamModel.findByPk(homeTeam);
+    const searchAway = await TeamModel.findByPk(awayTeam);
+    if (!searchHome || !searchAway) {
+      throw new ApiError(errorMessages.teamNotFound, codes.NOT_FOUND);
+    }
   }
 
   static async updateMatchesProgress(id: number): Promise<void> {
@@ -55,6 +68,9 @@ class MatchesService {
   private static async getById(id: number): Promise<void> {
     const checkId = await MatchesModel.findByPk(id);
     if (!checkId) throw new ApiError('Match not found', codes.NOT_FOUND);
+    if (checkId.dataValues.inProgress !== true) {
+      throw new ApiError('Match finished', codes.NOT_FOUND);
+    }
   }
 
   static async updateMatchesResults(id: number, data: IMatchesQuery): Promise<void> {
@@ -62,7 +78,7 @@ class MatchesService {
     const { homeTeamGoals, awayTeamGoals } = data;
     await MatchesModel
       .update(
-        { homeTeam: homeTeamGoals, awayTeam: awayTeamGoals },
+        { homeTeamGoals, awayTeamGoals },
         { where: { id } },
       );
   }
