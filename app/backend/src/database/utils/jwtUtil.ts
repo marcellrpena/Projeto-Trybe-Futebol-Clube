@@ -18,7 +18,7 @@ const validateToken = (token: string) => {
     // const { password: _, ...newData } = data;
     return { status: 200, message: payload };
   } catch (error) {
-    const e = 'Expired or invalid token';
+    const e = 'Token must be a valid token';
     return { status: null, message: e };
   }
 };

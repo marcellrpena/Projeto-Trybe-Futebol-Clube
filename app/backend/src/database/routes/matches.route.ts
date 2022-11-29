@@ -9,5 +9,6 @@ const matches = express.Router();
 
 matches.get('/', MatchesController.getByQuery, MatchesController.getAll);
 matches.post('/', validateToken, MatchesController.createMatch);
+matches.patch('/:id/finish', validateToken, MatchesController.matchUpdate);
 
 export default matches;

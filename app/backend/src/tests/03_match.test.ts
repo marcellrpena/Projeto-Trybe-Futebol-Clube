@@ -176,6 +176,7 @@ describe('testando o endpoint /matches para requisição por query', () => {
 describe('testando o endpoint /matches para salvar nova partida', () => {
   let chaiHttpResponse: Response;
   beforeEach(async () => {
+    sinon.stub(MatchesModel, "update");
     sinon.stub(MatchesModel, "create").resolves({
       dataValues: {
         "id": 1,
@@ -215,6 +216,7 @@ describe('testando o endpoint /matches para salvar nova partida', () => {
     (User.findOne as sinon.SinonStub).restore();
     (MatchesModel.findByPk as sinon.SinonStub).restore();
     (MatchesModel.create as sinon.SinonStub).restore();
+    (MatchesModel.update as sinon.SinonStub).restore();
   })
   it('req: 23 - testando se é possível salvar uma partida com o status de inProgress como true no banco de dados', async () => {
     const { body } = await chai.request(app).post('/login').send({
@@ -239,6 +241,43 @@ describe('testando o endpoint /matches para salvar nova partida', () => {
       "awayTeamGoals": 2,
       "inProgress": true,
     });
+    
+  });
+  it('req: 24 - testando se é possível salvar uma partida com o status de inProgress como true no banco de dados', async () => {
+    const { body } = await chai.request(app).post('/login').send({
+      "email": "admin@admin.com",
+      "password": "secret_admin"
+    });
+    const token = body.token;
+    const response = await chai.request(app).patch('/matches/1/finish').send({
+      "inProgress": false,
+    }).set('authorization', token);
+    expect(response.status).to.be.equal(200);
+    expect(response.body).to.be.deep.equal({ "message": "Finished" });
+  });
+  it('req: 25 - Será validado que não é possível inserir uma partida em que o homeTeam e o awayTeam sejam iguais', async () => {
+    const { body } = await chai.request(app).post('/login').send({
+      "email": "admin@admin.com",
+      "password": "secret_admin"
+    });
+    const token = body.token;
+    const response = await chai.request(app).post('/matches').send({
+      "homeTeam": 16,
+      "awayTeam": 16,
+      "homeTeamGoals": 2,
+      "awayTeamGoals": 2,
+    }).set('authorization', token);
+    // console.log(response.body);
+    // console.log(response.status);
+    expect(response.status).to.be.equal(201);
+    expect(response.body).to.be.deep.equal({
+      "id": 1,
+      "homeTeam": 16,
+      "homeTeamGoals": 2,
+      "awayTeam": 8,
+      "awayTeamGoals": 2,
+      "inProgress": true,
+    });
+    
   });
 });
-

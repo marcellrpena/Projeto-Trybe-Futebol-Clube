@@ -30,7 +30,7 @@ class LoginService {
     const { email, id } = userInfo;
     const user = await User.findByPk(id);
     if (!user || user.dataValues.email !== email) {
-      throw new ApiError('Expired or invalid token', codes.UNAUTHORIZED);
+      throw new ApiError('Token must be a valid token', codes.UNAUTHORIZED);
     }
     return user.dataValues.role;
   }

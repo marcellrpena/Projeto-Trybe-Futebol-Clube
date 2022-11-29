@@ -1,5 +1,7 @@
 // import ApiError from '../helpers/api-errors';
 // import codes from '../helpers/statusCode';
+import ApiError from '../helpers/api-errors';
+import codes from '../helpers/statusCode';
 import { IMatcher } from '../interfaces';
 import { IMatchesQuery } from '../interfaces/IMatcher';
 import MatchesModel from '../models/MatchesModel';
@@ -39,10 +41,21 @@ class MatchesService {
   }
 
   static async createMatches(match: IMatcher): Promise<IMatcher> {
-    // console.log(match);
     const { dataValues } = await MatchesModel.create({ ...match, inProgress: true });
     const newMatch = await MatchesModel.findByPk(dataValues.id);
     return newMatch?.dataValues;
+  }
+
+  static async updateMatches(id: number): Promise<void> {
+    MatchesService.getById(id);
+    const teste = await MatchesModel
+      .update({ inProgress: false }, { where: { id } });
+    console.log(teste);
+  }
+
+  private static async getById(id: number): Promise<void> {
+    const checkId = await MatchesModel.findByPk(id);
+    if (!checkId) throw new ApiError('Match not found', codes.NOT_FOUND);
   }
 }
 

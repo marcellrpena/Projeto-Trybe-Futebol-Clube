@@ -27,3 +27,12 @@ export const createMatch = async (
   const response = await MatchesService.createMatches(data);
   return res.status(201).json(response);
 };
+
+export const matchUpdate = async (
+  req: Request,
+  res: Response,
+): Promise<Response> => {
+  const { id } = req.params;
+  await MatchesService.updateMatches(Number(id));
+  return res.status(200).json({ message: 'Finished' });
+};
