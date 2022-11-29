@@ -8,11 +8,10 @@ const validateToken = async (req: Request, res: Response, next: NextFunction) =>
   const { status, message } = checkToken(authorization);
   if (!status) {
     const messages = `${message}`;
-    console.log('middleware de erro--->', messages);
     throw new ApiError(messages, codes.UNAUTHORIZED);
   }
   req.body = { data: req.body, message };
-  next();
+  return next();
 };
 
 export default validateToken;

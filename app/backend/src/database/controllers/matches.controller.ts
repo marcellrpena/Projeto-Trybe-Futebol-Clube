@@ -18,3 +18,12 @@ export const getByQuery = async (
   const response = await MatchesService.getByQuery(req.query);
   return res.status(200).json(response);
 };
+
+export const createMatch = async (
+  req: Request,
+  res: Response,
+): Promise<Response> => {
+  const { data } = req.body;
+  const response = await MatchesService.createMatches(data);
+  return res.status(201).json(response);
+};

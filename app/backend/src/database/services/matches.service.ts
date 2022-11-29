@@ -22,6 +22,7 @@ class MatchesService {
 
   static async getByQuery(query: IMatchesQuery): Promise<IMatcher[]> {
     const Bool = query.inProgress || '';
+    console.log(Bool);
     const inProgress = Bool.toLowerCase() === 'true';
     const response = (await MatchesModel.findAll({
       include: [
@@ -36,5 +37,13 @@ class MatchesService {
     })).map(({ dataValues }) => dataValues);
     return response;
   }
+
+  static async createMatches(match: IMatcher): Promise<IMatcher> {
+    // console.log(match);
+    const { dataValues } = await MatchesModel.create({ ...match, inProgress: true });
+    const newMatch = await MatchesModel.findByPk(dataValues.id);
+    return newMatch?.dataValues;
+  }
 }
+
 export default MatchesService;
