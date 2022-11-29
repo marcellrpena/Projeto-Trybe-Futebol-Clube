@@ -46,7 +46,7 @@ class MatchesService {
     return newMatch?.dataValues;
   }
 
-  static async updateMatches(id: number): Promise<void> {
+  static async updateMatchesProgress(id: number): Promise<void> {
     MatchesService.getById(id);
     await MatchesModel
       .update({ inProgress: false }, { where: { id } });
@@ -55,6 +55,16 @@ class MatchesService {
   private static async getById(id: number): Promise<void> {
     const checkId = await MatchesModel.findByPk(id);
     if (!checkId) throw new ApiError('Match not found', codes.NOT_FOUND);
+  }
+
+  static async updateMatchesResults(id: number, data: IMatchesQuery): Promise<void> {
+    MatchesService.getById(id);
+    const { homeTeamGoals, awayTeamGoals } = data;
+    await MatchesModel
+      .update(
+        { homeTeam: homeTeamGoals, awayTeam: awayTeamGoals },
+        { where: { id } },
+      );
   }
 }
 

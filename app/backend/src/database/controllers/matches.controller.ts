@@ -28,11 +28,21 @@ export const createMatch = async (
   return res.status(201).json(response);
 };
 
-export const matchUpdate = async (
+export const matchUpdateProgress = async (
   req: Request,
   res: Response,
 ): Promise<Response> => {
   const { id } = req.params;
-  await MatchesService.updateMatches(Number(id));
+  await MatchesService.updateMatchesProgress(Number(id));
   return res.status(200).json({ message: 'Finished' });
+};
+
+export const matchUpdateResults = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  const { id } = req.params;
+  const { data } = req.body;
+  await MatchesService.updateMatchesResults(Number(id), data);
+  return res.status(200).end();
 };

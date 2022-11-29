@@ -10,6 +10,7 @@ const matches = express.Router();
 
 matches.get('/', MatchesController.getByQuery, MatchesController.getAll);
 matches.post('/', validateToken, equalTeams, teamNotFound, MatchesController.createMatch);
-matches.patch('/:id/finish', validateToken, MatchesController.matchUpdate);
+matches.patch('/:id', validateToken, MatchesController.matchUpdateResults);
+matches.patch('/:id/finish', validateToken, MatchesController.matchUpdateProgress);
 
 export default matches;

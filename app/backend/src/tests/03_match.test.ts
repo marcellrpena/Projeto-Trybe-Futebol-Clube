@@ -224,7 +224,7 @@ describe('testando o endpoint /matches para salvar nova partida', () => {
     (MatchesModel.findByPk as sinon.SinonStub).restore();
     (TeamModel.findByPk as sinon.SinonStub).restore();
   })
-  it('req: 23 - testando se é possível salvar uma partida com o status de inProgress como true no banco de dados', async () => {
+  it('req: 23 - Será validado que é possível salvar um jogo no banco de dados e ver o jogo na página de jogos', async () => {
     const { body } = await chai.request(app).post('/login').send({
       "email": "admin@admin.com",
       "password": "secret_admin"
@@ -260,6 +260,18 @@ describe('testando o endpoint /matches para salvar nova partida', () => {
     }).set('authorization', token);
     expect(response.status).to.be.equal(200);
     expect(response.body).to.be.deep.equal({ "message": "Finished" });
+  });
+  it('req: 28 - Será avaliado que é possível alterar o resultado de uma partida.', async () => {
+    const { body } = await chai.request(app).post('/login').send({
+      "email": "admin@admin.com",
+      "password": "secret_admin"
+    });
+    const token = body.token;
+    const response = await chai.request(app).patch('/matches/1').send({
+      "homeTeamGoals": 3,
+      "awayTeamGoals": 1
+    }).set('authorization', token);
+    expect(response.status).to.be.equal(200);
   });
 });
 
