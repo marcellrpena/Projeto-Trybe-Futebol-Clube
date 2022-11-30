@@ -3,7 +3,7 @@ import db from '.';
 import { IMatcher } from '../interfaces';
 import TeamModel from './TeamsModel';
 
-class MatchesModel extends Model implements IMatcher {
+class MatchesModel extends Model implements IMatcher.IMatcher {
   declare id: number;
   declare homeTeam: number;
   declare homeTeamGoals: number;
@@ -54,8 +54,8 @@ MatchesModel.init({
   underscored: true,
 });
 
-TeamModel.hasMany(MatchesModel, { foreignKey: 'awayTeam' });
-TeamModel.hasMany(MatchesModel, { foreignKey: 'homeTeam' });
+TeamModel.hasMany(MatchesModel, { foreignKey: 'awayTeam', as: 'awayTeamMatches' });
+TeamModel.hasMany(MatchesModel, { foreignKey: 'homeTeam', as: 'homeTeamMatches' });
 MatchesModel.belongsTo(TeamModel, { as: 'teamHome', foreignKey: 'homeTeam' });
 MatchesModel.belongsTo(TeamModel, { as: 'teamAway', foreignKey: 'awayTeam' });
 

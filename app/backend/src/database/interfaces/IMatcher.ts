@@ -1,16 +1,23 @@
-export default interface IMatcher {
+export interface IMatcher {
   id: number;
   homeTeam: number;
   homeTeamGoals: number;
   awayTeam: number;
   awayTeamGoals: number;
   inProgress?: boolean;
-  teamHome?: {
+}
+
+export interface IMatcherAll extends IMatcher {
+  teamHome: {
     teamName: string,
   },
-  teamAway?: {
+  teamAway: {
     teamName: string,
   }
+}
+
+export interface IMatcherDataValues {
+  dataValues: IMatcher,
 }
 
 export interface IMatchesQuery {

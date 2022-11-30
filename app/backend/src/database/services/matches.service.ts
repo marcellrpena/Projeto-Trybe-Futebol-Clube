@@ -4,12 +4,12 @@ import ApiError from '../helpers/api-errors';
 import errorMessages from '../helpers/errorMessage';
 import codes from '../helpers/statusCode';
 import { IMatcher } from '../interfaces';
-import { IMatchesQuery } from '../interfaces/IMatcher';
+import { IMatcherAll, IMatchesQuery } from '../interfaces/IMatcher';
 import MatchesModel from '../models/MatchesModel';
 import TeamModel from '../models/TeamsModel';
 
 class MatchesService {
-  static async getAll(): Promise<IMatcher[]> {
+  static async getAll(): Promise<IMatcherAll[]> {
     const response = (await MatchesModel.findAll({
       include: [
         {
@@ -23,9 +23,8 @@ class MatchesService {
     return response;
   }
 
-  static async getByQuery(query: IMatchesQuery): Promise<IMatcher[]> {
-    const Bool = query.inProgress || '';
-    console.log(Bool);
+  static async getByQuery(query: IMatchesQuery): Promise<IMatcherAll[]> {
+    const Bool = query.inProgress as string;
     const inProgress = Bool.toLowerCase() === 'true';
     const response = (await MatchesModel.findAll({
       include: [
@@ -41,15 +40,15 @@ class MatchesService {
     return response;
   }
 
-  static async createMatches(match: IMatcher): Promise<IMatcher> {
+  static async createMatches(match: IMatcher.IMatcher): Promise<IMatcher.IMatcher> {
     MatchesService.teamNotFound(match);
     const { dataValues } = await MatchesModel.create({ ...match, inProgress: true });
-    const newMatch = await MatchesModel.findByPk(dataValues.id);
-    return newMatch?.dataValues;
+    const newMatch = await MatchesService.getById(dataValues.id) as IMatcher.IMatcher;
+    return newMatch;
   }
 
   private static async teamNotFound(
-    data: IMatcher,
+    data: IMatcher.IMatcher,
   ): Promise<void> {
     const { homeTeam, awayTeam } = data;
     const searchHome = await TeamModel.findByPk(homeTeam);
@@ -65,12 +64,13 @@ class MatchesService {
       .update({ inProgress: false }, { where: { id } });
   }
 
-  private static async getById(id: number): Promise<void> {
-    const checkId = await MatchesModel.findByPk(id);
-    if (!checkId) throw new ApiError('Match not found', codes.NOT_FOUND);
-    if (checkId.dataValues.inProgress !== true) {
+  private static async getById(id: number): Promise<IMatcher.IMatcher> {
+    const { dataValues } = await MatchesModel.findByPk(id) as IMatcher.IMatcherDataValues;
+    if (!dataValues) throw new ApiError('Match not found', codes.NOT_FOUND);
+    if (dataValues.inProgress !== true) {
       throw new ApiError('Match finished', codes.NOT_FOUND);
     }
+    return dataValues;
   }
 
   static async updateMatchesResults(id: number, data: IMatchesQuery): Promise<void> {
