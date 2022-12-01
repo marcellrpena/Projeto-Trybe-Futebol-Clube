@@ -44,6 +44,10 @@ export default class Leaderboards {
     return response.map((teste) => teste.get({ plain: true }));
   }
 
+  /* metodo genérico que cria desde um Leaderboard geral com partidas dentro  e
+     fora de casa e um leaderboard específico para os tipos de partida a
+     escolha */
+
   private static createLeaderboard(team: ILBoard.IMatchGoals[], name: string) {
     return {
       name,
@@ -73,6 +77,12 @@ export default class Leaderboards {
     return Leaderboards.orderTable(awayLeaderboard);
   }
 
+  /* com os métodos todos genéricos a única diferença do getter geral abaixo
+     para os específicos é que a busca do sequelize com o metodo FullLeaderboard
+     mais acima foi feita para times fora e de casa evitando fazer duas chamadas
+     assincronas, de resto foi feita apenas a junção das chaves de matches do
+     array geral,economizando assim uma chamada assincrona.
+      */
   static async getFullLeaderbord(): Promise<ILBoard.ILeaderboard[]> {
     const dataTeams = await Leaderboards.FullLeaderboard();
     const newDataTeams = dataTeams.map(({ name, homeTeamMatches, awayTeamMatches }) => ({
@@ -83,6 +93,8 @@ export default class Leaderboards {
       .map(({ name, teamMatches }) => Leaderboards.createLeaderboard(teamMatches, name));
     return Leaderboards.orderTable(fullLeaderboard);
   }
+
+  /* A ordenação da tabela foi dividida em duas etapas */
 
   private static orderTable(
     leaderboard: ILBoard.ILeaderboard[],
@@ -110,6 +122,10 @@ export default class Leaderboards {
     }
     return b.goalsBalance - a.goalsBalance;
   }
+
+  /* todos os metodos abaixo foram feitos para serem genéricos sem a necessidade
+  de alterações, ou seja, foram feitas modificações minimas nos getters de tabela
+  para se adaptarem aos metodos abaixo */
 
   private static totPoints(matches: ILBoard.IMatchGoals[]): number {
     const points = matches.reduce((acc, curr) => {
@@ -165,6 +181,3 @@ export default class Leaderboards {
     return parseFloat(((points / (games * 3)) * 100).toFixed(2));
   }
 }
-
-/* const teste = async () => console.log(await Leaderboards.getFullLeaderbord());
-teste(); */
