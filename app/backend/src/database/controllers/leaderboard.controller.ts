@@ -16,3 +16,11 @@ export const getAwayLeaderboard = async (
   const response = await Leaderboards.getAwayLeaderboard();
   return res.status(200).json(response);
 };
+
+export const getFullLeaderboard = async (
+  _req: Request,
+  res: Response,
+): Promise<Response> => {
+  const response = await Leaderboards.getFullLeaderbord();
+  return res.status(200).json(response);
+};

@@ -6,6 +6,7 @@ export default class Leaderboards {
   private static teamPoints: number;
   private static goalsFavorTeam: number;
   private static goalsOwnTeam: number;
+
   private static async leaderboard(team: string): Promise<ILBoard.IFullLeaderboard[]> {
     const attrbMatches = team === 'home' ? ['home', 'away'] : ['away', 'home'];
     const response = await TeamModel.findAll({
@@ -13,6 +14,27 @@ export default class Leaderboards {
         model: MatchesModel,
         as: `${team}TeamMatches`,
         attributes: [`${attrbMatches[0]}_team_goals`, `${attrbMatches[1]}_team_goals`],
+        where: { inProgress: false },
+      },
+      ],
+      attributes: [['team_name', 'name']],
+    });
+    // abaixo é usado o metodo .get({ plain: true}) com isso agrupo as partidas em objetos por nome do time principal
+    return response.map((teste) => teste.get({ plain: true }));
+  }
+
+  private static async FullLeaderboard(): Promise<ILBoard.IFullLeaderboard[]> {
+    const response = await TeamModel.findAll({
+      include: [{
+        model: MatchesModel,
+        as: 'homeTeamMatches',
+        attributes: ['home_team_goals', 'away_team_goals'],
+        where: { inProgress: false },
+      },
+      {
+        model: MatchesModel,
+        as: 'awayTeamMatches',
+        attributes: ['away_team_goals', 'home_team_goals'],
         where: { inProgress: false },
       },
       ],
@@ -44,6 +66,24 @@ export default class Leaderboards {
     return Leaderboards.orderTable(homeLeaderboard);
   }
 
+  static async getAwayLeaderboard(): Promise<ILBoard.ILeaderboard[]> {
+    const dataTeams = await Leaderboards.leaderboard('away');
+    const awayLeaderboard = dataTeams
+      .map(({ name, awayTeamMatches }) => Leaderboards.createLeaderboard(awayTeamMatches, name));
+    return Leaderboards.orderTable(awayLeaderboard);
+  }
+
+  static async getFullLeaderbord(): Promise<ILBoard.ILeaderboard[]> {
+    const dataTeams = await Leaderboards.FullLeaderboard();
+    const newDataTeams = dataTeams.map(({ name, homeTeamMatches, awayTeamMatches }) => ({
+      name,
+      teamMatches: [...homeTeamMatches, ...awayTeamMatches],
+    }));
+    const fullLeaderboard = newDataTeams
+      .map(({ name, teamMatches }) => Leaderboards.createLeaderboard(teamMatches, name));
+    return Leaderboards.orderTable(fullLeaderboard);
+  }
+
   private static orderTable(
     leaderboard: ILBoard.ILeaderboard[],
   ): ILBoard.ILeaderboard[] {
@@ -69,13 +109,6 @@ export default class Leaderboards {
       return b.goalsFavor - a.goalsFavor;
     }
     return b.goalsBalance - a.goalsBalance;
-  }
-
-  static async getAwayLeaderboard() {
-    const dataTeams = await Leaderboards.leaderboard('away');
-    const awayLeaderboard = dataTeams
-      .map(({ name, awayTeamMatches }) => Leaderboards.createLeaderboard(awayTeamMatches, name));
-    return Leaderboards.orderTable(awayLeaderboard);
   }
 
   private static totPoints(matches: ILBoard.IMatchGoals[]): number {
@@ -133,10 +166,5 @@ export default class Leaderboards {
   }
 }
 
-/* const array = [
-  { awayTeamGoals: 1, homeTeamGoals: 2 },
-  { awayTeamGoals: 0, homeTeamGoals: 1 },
-  { awayTeamGoals: 3, homeTeamGoals: 1 },
-];
-const teste = () => console.log(Leaderboards.totPoints(array));
+/* const teste = async () => console.log(await Leaderboards.getFullLeaderbord());
 teste(); */

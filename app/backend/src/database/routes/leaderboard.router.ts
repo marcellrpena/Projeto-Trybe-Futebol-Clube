@@ -8,6 +8,7 @@ import * as LeaderboardController from '../controllers/leaderboard.controller';
 
 const leaderboard = express.Router();
 
+leaderboard.get('/', LeaderboardController.getFullLeaderboard);
 leaderboard.get('/home', LeaderboardController.getHomeLeaderboard);
 leaderboard.get('/away', LeaderboardController.getAwayLeaderboard);
 

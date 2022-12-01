@@ -1,5 +1,5 @@
 {
-  "compilerOptions": {
+    "compilerOptions": {
     "target": "es2019",
     "module": "commonjs",
     "sourceMap": true,                     
@@ -17,6 +17,6 @@
       "*": ["node_modules/*"]
     }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "src/database/services"],
   "exclude": ["src/tests"]
 }
